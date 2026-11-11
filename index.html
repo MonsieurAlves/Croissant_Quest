@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#172b4d">
+  <title>Croissant Quest | Pac-Alves</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="game.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="hero">
+      <div class="eyebrow">A VERY FRENCH ARCADE ADVENTURE</div>
+      <h1>Croissant <em>Quest</em></h1>
+      <p>Guide Monsieur Alves through the maze and collect every croissant!</p>
+    </header>
+    <section class="game-shell" aria-label="Croissant Quest game">
+      <div class="scoreboard">
+        <div class="metric"><span>Score</span><strong id="score">0</strong></div>
+        <div class="metric"><span>Croissants left</span><strong id="remaining">0</strong></div>
+        <div class="metric"><span>Status</span><strong id="status">Ready</strong></div>
+      </div>
+      <div class="board-wrap">
+        <canvas id="maze" width="612" height="612" role="img" aria-label="Arcade maze with Monsieur Alves collecting croissants"></canvas>
+        <div id="overlay" class="overlay">
+          <div class="overlay-card">
+            <div class="overlay-icon" aria-hidden="true">🥐</div>
+            <h2 id="overlayTitle">Ready, Monsieur Alves?</h2>
+            <p id="overlayText">Use your arrow keys or WASD. On a phone, use the direction buttons below.</p>
+            <button id="primary" type="button">Start Game</button>
+          </div>
+        </div>
+      </div>
+      <div class="toolbar">
+        <button type="button" id="pause" class="secondary">Pause</button>
+        <button type="button" id="restart" class="secondary">New Game</button>
+      </div>
+      <div class="controls" aria-label="Touch direction controls">
+        <button type="button" class="up" data-dir="up" aria-label="Move up">▲</button>
+        <button type="button" class="left" data-dir="left" aria-label="Move left">◀</button>
+        <button type="button" class="down" data-dir="down" aria-label="Move down">▼</button>
+        <button type="button" class="right" data-dir="right" aria-label="Move right">▶</button>
+      </div>
+      <p class="instructions">Arrow keys / WASD to move · Press Space to pause · Collect every 🥐 to win</p>
+    </section>
+    <footer>Version 0.1 · Built for fun and for learning how games work</footer>
+  </main>
+</body>
+</html>
