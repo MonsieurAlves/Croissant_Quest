@@ -1,0 +1,33 @@
+:root{--navy:#172b4d;--deep:#101c37;--coral:#ff8174;--mint:#82deca;--cream:#fff9f2;--gold:#ffd88a}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 0% 40%,#ffddd6 0%,transparent 29%),radial-gradient(circle at 100% 80%,#c6f3e7 0%,transparent 35%),var(--cream);color:var(--navy);font-family:"Trebuchet MS",Arial,sans-serif}
+main{max-width:850px;padding:20px;margin:auto}
+.hero{text-align:center;margin:8px 0 20px}
+.eyebrow{letter-spacing:2.5px;font-size:11px;font-weight:900;color:#427083}
+h1{font-size:clamp(36px,6vw,62px);letter-spacing:-2px;margin:4px 0;line-height:1.12}
+h1 em{font-style:normal;color:#ee695e}
+.hero p{margin:8px 0;color:#536c80}
+.game-shell{background:#fff;border-radius:30px;padding:19px;box-shadow:0 20px 55px #172b4d1e,0 5px 15px #172b4d0e}
+.scoreboard{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:15px}
+.metric{background:#e9f8f5;border-radius:16px;padding:11px 13px;text-align:center}
+.metric span{display:block;text-transform:uppercase;font-size:11px;letter-spacing:.6px;font-weight:800}
+.metric strong{font-size:24px;display:block;margin-top:3px}
+.board-wrap{position:relative;max-width:612px;margin:auto;border-radius:17px;overflow:hidden;background:var(--deep);box-shadow:0 7px 20px #172b4d40}
+canvas{display:block;width:100%;height:auto;aspect-ratio:1;touch-action:none}
+.overlay{position:absolute;inset:0;background:#101c37c9;display:flex;justify-content:center;align-items:center;padding:20px}
+.overlay.hidden{display:none}
+.overlay-card{text-align:center;background:#fff9f3;border-radius:23px;padding:24px;max-width:365px;box-shadow:0 15px 40px #0004}
+.overlay-icon{font-size:45px}.overlay-card h2{margin:4px 0;font-size:25px}
+.overlay-card p{line-height:1.5;font-size:14px;color:#536c80}
+button{font-family:inherit;min-height:44px;border:none;border-radius:999px;background:linear-gradient(125deg,#ff9d7c,#f16f6d);color:white;font-weight:900;font-size:15px;padding:11px 25px;cursor:pointer;box-shadow:0 5px 13px #ef77763f}
+button:hover{filter:brightness(1.05);transform:translateY(-1px)}
+button:focus-visible{outline:3px solid #e0a027;outline-offset:3px}
+button.secondary{background:#e5f7f2;color:var(--navy);box-shadow:none}
+.toolbar{display:flex;gap:10px;justify-content:center;margin:15px 0 8px}
+.controls{display:grid;grid-template-areas:". up ." "left down right";grid-template-columns:repeat(3,60px);gap:7px;justify-content:center;margin:10px 0 5px}
+.controls button{height:52px;padding:0;background:#d9f6eb;color:var(--navy);font-size:20px;box-shadow:0 4px 10px #172b4d1a;border-radius:17px}
+.controls .up{grid-area:up}.controls .left{grid-area:left}.controls .down{grid-area:down}.controls .right{grid-area:right}
+.instructions{font-size:12px;color:#607488;text-align:center}
+footer{text-align:center;font-size:12px;color:#667c8d;padding:18px 0}
+@media(max-width:490px){main{padding:8px}.game-shell{padding:10px;border-radius:20px}.metric{padding:8px 5px}.metric strong{font-size:18px}.metric span{font-size:9px}.overlay-card{padding:16px}}
+@media(prefers-reduced-motion:reduce){button:hover{transform:none}}
