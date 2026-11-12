@@ -1,19 +1,22 @@
 "use strict";
-// Croissant Quest v0.1 — movement, maze generation and collection.
+// Macaron Quest v0.4 — movement, maze generation and collection.
 const canvas = document.getElementById("maze");
 const ctx = canvas.getContext("2d");
 const $ = id => document.getElementById(id);
 const SIZE = 17;
 const CELL = canvas.width / SIZE;
 const DIRECTIONS = {up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
-let walls, croissants, player, direction, desiredDirection, lastMoveAt;
+let walls, macarons, player, direction, desiredDirection, lastMoveAt;
 let playing = false, finished = false, score = 0, animationHandle = 0, lastFrame = 0;
 // Two sprite frames. Each is a pixel-art SVG in this repository.
 const sprites = { closed: new Image(), open: new Image() };
 sprites.closed.src = "assets/player-closed.svg";
 sprites.open.src = "assets/player-open.svg";
-const croissantSprite = new Image();
-croissantSprite.src = "assets/croissant-arcade-v3.svg";
+const macaronSprites = ["raspberry", "pistachio", "lavender"].map(flavor => {
+  const image = new Image();
+  image.src = "assets/macaron-" + flavor + ".svg";
+  return image;
+});
 let lastStepAt = 0;
 ctx.imageSmoothingEnabled = false;
 
@@ -28,7 +31,7 @@ function shuffle(items){
 const key = (x,y)=>x+","+y;
 function buildMaze(){
   walls = Array.from({length:SIZE},()=>Array(SIZE).fill(true));
-  // Recursive-backtracker maze: passages are connected, so every croissant is reachable.
+  // Recursive-backtracker maze: passages are connected, so every macaron is reachable.
   function carve(x,y){
     walls[y][x]=false;
     for(const [dx,dy] of shuffle([[2,0],[-2,0],[0,2],[0,-2]])){
@@ -57,7 +60,7 @@ function buildMaze(){
       if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
     }
   }
-  croissants=new Set(shuffle(openSpaces).slice(0,Math.min(38,openSpaces.length)));
+  macarons=new Set(shuffle(openSpaces).slice(0,Math.min(38,openSpaces.length)));
   player={x:1,y:1};
   direction=null;
   desiredDirection=null;
@@ -65,7 +68,7 @@ function buildMaze(){
   score=0;
   finished=false;
   $("score").textContent="0";
-  $("remaining").textContent=String(croissants.size);
+  $("remaining").textContent=String(macarons.size);
   $("status").textContent="Ready";
   $("pause").textContent="Pause";
 }
@@ -86,11 +89,11 @@ function step(){
   player.y+=dy;
   lastStepAt=performance.now();
   const k=key(player.x,player.y);
-  if(croissants.delete(k)){
+  if(macarons.delete(k)){
     score+=10;
     $("score").textContent=String(score);
-    $("remaining").textContent=String(croissants.size);
-    if(croissants.size===0){
+    $("remaining").textContent=String(macarons.size);
+    if(macarons.size===0){
       finish();
     }
   }
@@ -114,12 +117,12 @@ function pause(){
   playing=false;
   $("status").textContent="Paused";
   $("pause").textContent="Resume";
-  showOverlay("Game paused","Ready for more croissants?","Resume");
+  showOverlay("Game paused","Ready for more macarons?","Resume");
 }
 function finish(){
   playing=false;finished=true;
   $("status").textContent="Won!";
-  showOverlay("Bravo! You did it!","All croissants collected. Final score: "+score+" points.","Play Again");
+  showOverlay("Bravo! You did it!","All macarons collected. Final score: "+score+" points.","Play Again");
 }
 function restart(){
   buildMaze();
@@ -163,18 +166,22 @@ function drawPlayer(time){
   }
   ctx.restore();
 }
-function drawCroissant(x,y){
+function drawMacaron(x,y){
   const cx=(x+.5)*CELL,cy=(y+.5)*CELL;
-  const size=CELL*1.16;
-  if(croissantSprite.complete && croissantSprite.naturalWidth){
+  // Each coordinate has a consistent macaron flavor.
+  const sprite=macaronSprites[(x*7+y*11)%macaronSprites.length];
+  const size=CELL*.82;
+  if(sprite.complete && sprite.naturalWidth){
     ctx.save();
     ctx.imageSmoothingEnabled=false;
-    ctx.drawImage(croissantSprite,cx-size/2,cy-size/2,size,size);
+    ctx.drawImage(sprite,cx-size/2,cy-size/2,size,size);
     ctx.restore();
     return;
   }
-  ctx.fillStyle="#FFD17A";
-  ctx.fillRect(cx-6,cy-5,12,10);
+  ctx.fillStyle="#F1789C";
+  ctx.beginPath();
+  ctx.arc(cx,cy,CELL*.31,0,Math.PI*2);
+  ctx.fill();
 }
 function render(time){
   ctx.clearRect(0,0,canvas.width,canvas.height);
@@ -185,9 +192,9 @@ function render(time){
       roundRect(x*CELL+6,y*CELL+5,CELL-12,4,2,"#a3f4d8");
     }
   }
-  for(const k of croissants){
+  for(const k of macarons){
     const [x,y]=k.split(",").map(Number);
-    drawCroissant(x,y);
+    drawMacaron(x,y);
   }
   drawPlayer(time);
 }
