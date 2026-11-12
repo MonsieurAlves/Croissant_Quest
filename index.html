@@ -6,14 +6,14 @@
   <meta name="theme-color" content="#172b4d">
   <title>Macaron Quest | Pac-Alves</title>
   <link rel="stylesheet" href="style.css">
-  <script src="game.js?v=5" defer></script>
+  <script src="game.js?v=etoile-1" defer></script>
 </head>
 <body>
   <main>
     <header class="hero">
       <div class="eyebrow">A VERY FRENCH ARCADE ADVENTURE</div>
       <h1>Macaron <em>Quest</em></h1>
-      <p>Guide Monsieur Alves through the maze and collect every macaron!</p>
+      <p>Explore Place de l’Étoile, circle the Arc de Triomphe, and collect every macaron!</p>
     </header>
     <section class="game-shell" aria-label="Macaron Quest game">
       <div class="scoreboard">
@@ -22,12 +22,12 @@
         <div class="metric"><span>Status</span><strong id="status">Ready</strong></div>
       </div>
       <div class="board-wrap">
-        <canvas id="maze" width="612" height="612" role="img" aria-label="Arcade maze with Monsieur Alves collecting macarons"></canvas>
+        <canvas id="maze" width="700" height="700" role="img" aria-label="Arcade maze with Monsieur Alves collecting macarons"></canvas>
         <div id="overlay" class="overlay">
           <div class="overlay-card">
             <div class="overlay-icon" aria-hidden="true">🍬</div>
-            <h2 id="overlayTitle">Ready, Monsieur Alves?</h2>
-            <p id="overlayText">Use your arrow keys or WASD. On a phone, use the direction buttons below.</p>
+            <h2 id="overlayTitle">Bienvenue à l’Étoile !</h2>
+            <p id="overlayText">Travel along twelve avenues around the Arc de Triomphe. The central monument will be our future ghost house!</p>
             <button id="primary" type="button">Start Game</button>
           </div>
         </div>
@@ -44,7 +44,7 @@
       </div>
       <p class="instructions">Arrow keys / WASD to move · Press Space to pause · Collect every 🥐 to win</p>
     </section>
-    <footer>Version 0.5 · Built for fun and for learning how games work</footer>
+    <footer>Étoile branch preview v0.6 · Built for fun and for learning how games work</footer>
   </main>
 </body>
 </html>
