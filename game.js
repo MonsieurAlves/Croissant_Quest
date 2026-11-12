@@ -1,9 +1,9 @@
 "use strict";
-// Macaron Quest v0.4 — movement, maze generation and collection.
+// Macaron Quest v0.6 Étoile experiment — fixed radial maze and central ghost house.
 const canvas = document.getElementById("maze");
 const ctx = canvas.getContext("2d");
 const $ = id => document.getElementById(id);
-const SIZE = 17;
+const SIZE = 25;
 const CELL = canvas.width / SIZE;
 const DIRECTIONS = {up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
 let walls, macarons, player, direction, desiredDirection, lastMoveAt;
@@ -29,44 +29,70 @@ function shuffle(items){
   return result;
 }
 const key = (x,y)=>x+","+y;
+// Fixed Place de l'Étoile level. Ghosts will eventually spawn inside the Arc.
+const CENTER = Math.floor(SIZE/2);
+const GHOST_HOUSE_RADIUS = 2.65;
+const keyPoint = (x,y) => key(x,y);
 function buildMaze(){
-  walls = Array.from({length:SIZE},()=>Array(SIZE).fill(true));
-  // Recursive-backtracker maze: passages are connected, so every macaron is reachable.
-  function carve(x,y){
-    walls[y][x]=false;
-    for(const [dx,dy] of shuffle([[2,0],[-2,0],[0,2],[0,-2]])){
-      const nx=x+dx,ny=y+dy;
-      if(nx>0&&ny>0&&nx<SIZE-1&&ny<SIZE-1&&walls[ny][nx]){
-        walls[y+dy/2][x+dx/2]=false;
-        carve(nx,ny);
+  walls=Array.from({length:SIZE},()=>Array(SIZE).fill(true));
+  const inside=(x,y)=>x>0&&y>0&&x<SIZE-1&&y<SIZE-1;
+  const open=(x,y)=>{
+    if(inside(x,y) && Math.hypot(x-CENTER,y-CENTER)>GHOST_HOUSE_RADIUS)
+      walls[y][x]=false;
+  };
+  // Draw each circular road as a connected, orthogonal sequence of tiles.
+  // Connecting horizontal + vertical steps lets arrow-key motion follow curves.
+  function walkPath(points){
+    if(!points.length)return;
+    let [x,y]=points[0];
+    open(x,y);
+    for(const [tx,ty] of points.slice(1)){
+      while(x!==tx){x+=Math.sign(tx-x);open(x,y);}
+      while(y!==ty){y+=Math.sign(ty-y);open(x,y);}
+    }
+  }
+  function ring(radius){
+    const points=[];
+    for(let i=0;i<=192;i++){
+      const a=i*Math.PI*2/192;
+      points.push([Math.round(CENTER+radius*Math.cos(a)),Math.round(CENTER+radius*Math.sin(a))]);
+    }
+    walkPath(points);
+  }
+  // Inner circular roadway, intermediate crossing streets, and outer boulevard.
+  ring(4.5);
+  ring(8);
+  ring(10.2);
+  // Twelve radial avenues, just like the historic Place de l'Étoile.
+  for(let spoke=0;spoke<12;spoke++){
+    const a=spoke*Math.PI/6;
+    const points=[];
+    for(let radius=4.2;radius<=11.2;radius+=.15){
+      points.push([Math.round(CENTER+radius*Math.cos(a)),Math.round(CENTER+radius*Math.sin(a))]);
+    }
+    walkPath(points);
+  }
+  // Connect the final radial ends to the outer ring, and reinforce ring bends
+  // where the stepped cells meet, without opening the landmark in the center.
+  const start={x:CENTER,y:2};
+  open(start.x,start.y);
+  // Keep only squares connected to the start: every collectible is reachable.
+  const reachable=new Set([key(start.x,start.y)]);
+  const queue=[start];
+  for(let qi=0;qi<queue.length;qi++){
+    const p=queue[qi];
+    for(const [dx,dy] of Object.values(DIRECTIONS)){
+      const nx=p.x+dx,ny=p.y+dy,k=key(nx,ny);
+      if(inside(nx,ny)&&!walls[ny][nx]&&!reachable.has(k)){
+        reachable.add(k);queue.push({x:nx,y:ny});
       }
     }
   }
-  carve(1,1);
-  // Add some shortcuts to make the routes more forgiving.
-  for(let y=2;y<SIZE-2;y++){
-    for(let x=2;x<SIZE-2;x++){
-      if(walls[y][x]&&Math.random()<.12){
-        const horizontal=!walls[y][x-1]&&!walls[y][x+1];
-        const vertical=!walls[y-1][x]&&!walls[y+1][x];
-        if(horizontal||vertical) walls[y][x]=false;
-      }
-    }
-  }
-  // Fewer, larger pickups remain readable; a shuffled subset of reachable corridors.
-  const openSpaces = [];
-  for(let y=1;y<SIZE-1;y++){
-    for(let x=1;x<SIZE-1;x++){
-      if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
-    }
-  }
+  const openSpaces=[...reachable].filter(k=>k!==key(start.x,start.y));
+  // Keep the maze arcade-dense but don't crowd every walkway.
   macarons=new Set(shuffle(openSpaces).slice(0,Math.min(75,openSpaces.length)));
-  player={x:1,y:1};
-  direction=null;
-  desiredDirection=null;
-  lastMoveAt=0;
-  score=0;
-  finished=false;
+  player=start;
+  direction=null;desiredDirection=null;lastMoveAt=0;score=0;finished=false;
   $("score").textContent="0";
   $("remaining").textContent=String(macarons.size);
   $("status").textContent="Ready";
@@ -183,6 +209,32 @@ function drawMacaron(x,y){
   ctx.arc(cx,cy,CELL*.31,0,Math.PI*2);
   ctx.fill();
 }
+function drawArcDeTriomphe(){
+  // The Arc occupies the inaccessible center and doubles as a future ghost house.
+  const cx=(CENTER+.5)*CELL,cy=(CENTER+.5)*CELL;
+  ctx.save();
+  ctx.fillStyle="#1A2947";
+  ctx.fillRect(cx-2.3*CELL,cy-2.25*CELL,4.6*CELL,4.5*CELL);
+  // A pixel-art top-down facade, drawn with intentionally square edges.
+  const unit=CELL*.19;
+  function block(x,y,w,h,color){
+    ctx.fillStyle=color;
+    ctx.fillRect(Math.round(cx+x*unit),Math.round(cy+y*unit),Math.ceil(w*unit),Math.ceil(h*unit));
+  }
+  block(-8,-11,16,3,"#E7CAA0");
+  block(-9,-8,18,3,"#C8A477");
+  block(-9,-5,5,14,"#E7CAA0");
+  block(4,-5,5,14,"#E7CAA0");
+  block(-4,-5,8,13,"#1A2947");
+  block(-11,9,22,2,"#E7CAA0");
+  block(-9,-9,18,1,"#FFF0CD");
+  block(-8,-4,3,10,"#FFF0CD");
+  block(5,-4,3,10,"#FFF0CD");
+  ctx.font="bold "+Math.round(CELL*.33)+"px monospace";
+  ctx.fillStyle="#FFD17A";ctx.textAlign="center";
+  ctx.fillText("GHOST HOUSE",cx,cy+CELL*2.05);
+  ctx.restore();
+}
 function render(time){
   ctx.clearRect(0,0,canvas.width,canvas.height);
   ctx.fillStyle="#101c37";ctx.fillRect(0,0,canvas.width,canvas.height);
@@ -192,6 +244,7 @@ function render(time){
       roundRect(x*CELL+6,y*CELL+5,CELL-12,4,2,"#a3f4d8");
     }
   }
+  drawArcDeTriomphe();
   for(const k of macarons){
     const [x,y]=k.split(",").map(Number);
     drawMacaron(x,y);
