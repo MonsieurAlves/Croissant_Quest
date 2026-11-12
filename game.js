@@ -60,7 +60,8 @@ function buildMaze(){
       if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
     }
   }
-  macarons=new Set(shuffle(openSpaces).slice(0,Math.min(75,openSpaces.length)));
+  // Every walkable corridor tile gets a macaron, except the starting tile.
+  macarons=new Set(openSpaces);
   player={x:1,y:1};
   direction=null;
   desiredDirection=null;
