@@ -8,10 +8,12 @@ const CELL = canvas.width / SIZE;
 const DIRECTIONS = {up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
 let walls, croissants, player, direction, desiredDirection, lastMoveAt;
 let playing = false, finished = false, score = 0, animationHandle = 0, lastFrame = 0;
-const avatar = new Image();
-avatar.src = "https://monsieuralves.github.io/french-conjugation-game/assets/welcome.webp";
-let avatarReady = false;
-avatar.addEventListener("load",()=>{avatarReady = true; render(performance.now());});
+// Two sprite frames. Each is a pixel-art SVG in this repository.
+const sprites = { closed: new Image(), open: new Image() };
+sprites.closed.src = "assets/player-closed.svg";
+sprites.open.src = "assets/player-open.svg";
+let lastStepAt = 0;
+ctx.imageSmoothingEnabled = false;
 
 function shuffle(items){
   const result=[...items];
@@ -78,6 +80,7 @@ function step(){
   if(!canMove(dx,dy))return;
   player.x+=dx;
   player.y+=dy;
+  lastStepAt=performance.now();
   const k=key(player.x,player.y);
   if(croissants.delete(k)){
     score+=10;
@@ -133,30 +136,28 @@ function roundRect(x,y,w,h,r,color){
   ctx.fill();
 }
 function drawPlayer(time){
-  const x=(player.x+.5)*CELL,y=(player.y+.5)*CELL;
-  const r=CELL*.41;
+  const x = (player.x + .5) * CELL;
+  const y = (player.y + .5) * CELL;
+  // The sprite is 1.5 maze tiles wide, not restricted to its collision tile.
+  // Draw it last so the face appears in front of nearby maze features.
+  const side = CELL * 1.58;
+  const chomping = playing && Math.floor(time / 145) % 2 === 0 && direction !== null;
+  const sprite = sprites[chomping ? "open" : "closed"];
   ctx.save();
-  ctx.translate(x,y);
-  const angles={right:0,down:Math.PI/2,left:Math.PI,up:-Math.PI/2};
-  const facing=direction||desiredDirection||"right";
-  ctx.rotate(angles[facing]);
-  ctx.shadowColor="#0009";ctx.shadowBlur=9;ctx.shadowOffsetY=3;
-  // The chomp wedge indicates movement and doubles as a fallback face design.
-  const mouth=playing?.18+Math.abs(Math.sin(time/110))*.27:.14;
-  ctx.fillStyle="#ffcf8e";
-  ctx.beginPath();ctx.moveTo(0,0);ctx.arc(0,0,r,mouth,Math.PI*2-mouth);ctx.closePath();ctx.fill();
-  ctx.shadowBlur=0;ctx.shadowOffsetY=0;
-  ctx.fillStyle="#17334c";ctx.beginPath();ctx.arc(-r*.06,-r*.46,r*.1,0,Math.PI*2);ctx.fill();
-  ctx.restore();
-  if(avatarReady){
-    ctx.save();
-    ctx.beginPath();ctx.arc(x,y,r*.76,0,Math.PI*2);ctx.clip();
-    // Place the face within the circular playable head.
-    const w=avatar.naturalWidth,h=avatar.naturalHeight;
-    const side=Math.min(w,h);
-    ctx.drawImage(avatar,(w-side)/2,Math.max(0,h*.02),side,Math.min(side,h*.80),x-r*.78,y-r*.78,r*1.56,r*1.56);
-    ctx.restore();
+  ctx.imageSmoothingEnabled = false;
+  ctx.shadowColor = "#0009";
+  ctx.shadowBlur = 5;
+  ctx.shadowOffsetY = 3;
+  if(sprite.complete && sprite.naturalWidth){
+    ctx.translate(x,y);
+    // Flip while moving left, rather than rotating the face upside down.
+    if(direction === "left") ctx.scale(-1,1);
+    ctx.drawImage(sprite,-side/2,-side/2,side,side);
+  } else {
+    ctx.fillStyle="#E9AC83";
+    ctx.fillRect(x-CELL*.4,y-CELL*.4,CELL*.8,CELL*.8);
   }
+  ctx.restore();
 }
 function drawCroissant(x,y){
   const cx=(x+.5)*CELL,cy=(y+.5)*CELL;
