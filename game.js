@@ -13,7 +13,7 @@ const sprites = { closed: new Image(), open: new Image() };
 sprites.closed.src = "assets/player-closed.svg";
 sprites.open.src = "assets/player-open.svg";
 const croissantSprite = new Image();
-croissantSprite.src = "assets/croissant-arcade-v2.svg";
+croissantSprite.src = "assets/croissant-arcade-v3.svg";
 let lastStepAt = 0;
 ctx.imageSmoothingEnabled = false;
 
@@ -50,12 +50,14 @@ function buildMaze(){
       }
     }
   }
-  croissants=new Set();
+  // Fewer, larger pickups remain readable; a shuffled subset of reachable corridors.
+  const openSpaces = [];
   for(let y=1;y<SIZE-1;y++){
     for(let x=1;x<SIZE-1;x++){
-      if(!walls[y][x]&&(x!==1||y!==1)&&Math.random()<.78) croissants.add(key(x,y));
+      if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
     }
   }
+  croissants=new Set(shuffle(openSpaces).slice(0,Math.min(38,openSpaces.length)));
   player={x:1,y:1};
   direction=null;
   desiredDirection=null;
@@ -163,7 +165,7 @@ function drawPlayer(time){
 }
 function drawCroissant(x,y){
   const cx=(x+.5)*CELL,cy=(y+.5)*CELL;
-  const size=CELL*.90;
+  const size=CELL*1.16;
   if(croissantSprite.complete && croissantSprite.naturalWidth){
     ctx.save();
     ctx.imageSmoothingEnabled=false;
