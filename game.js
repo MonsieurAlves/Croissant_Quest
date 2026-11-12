@@ -60,7 +60,7 @@ function buildMaze(){
       if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
     }
   }
-  macarons=new Set(shuffle(openSpaces).slice(0,Math.min(38,openSpaces.length)));
+  macarons=new Set(shuffle(openSpaces).slice(0,Math.min(75,openSpaces.length)));
   player={x:1,y:1};
   direction=null;
   desiredDirection=null;
