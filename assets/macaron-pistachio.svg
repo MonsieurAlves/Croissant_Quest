@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36" shape-rendering="crispEdges" aria-label="pistachio pixel art macaron">
+<!-- 16-bit sandwich-cookie silhouette, top and bottom shells separated by a thick filling -->
+<path fill="#2B233B" d="M11 3H25V5H29V8H32V12H34V24H32V28H29V31H25V33H11V31H7V28H4V24H2V12H4V8H7V5H11Z"/>
+<path fill="#317D69" d="M11 5H25V7H29V10H31V13H32V16H4V13H5V10H7V7H11Z"/>
+<path fill="#74CC9E" d="M12 6H24V8H28V10H30V13H31V15H5V13H6V10H8V8H12Z"/>
+<path fill="#B5E9B3" d="M12 8H21V10H24V12H9V11H11V9H12Z"/>
+<!-- little scalloped feet create recognisable macaron profile -->
+<path fill="#317D69" d="M5 15H8V17H11V15H14V17H17V15H20V17H23V15H26V17H29V15H31V20H5Z"/>
+<path fill="#FFF0D3" d="M5 18H31V23H5Z"/>
+<path fill="#E9CAA9" d="M7 22H29V24H7Z"/>
+<path fill="#317D69" d="M5 24H31V27H29V29H25V31H11V29H7V27H5Z"/>
+<path fill="#74CC9E" d="M6 25H30V27H28V29H24V30H12V29H8V27H6Z"/>
+<path fill="#B5E9B3" d="M10 26H15V27H10Z"/>
+</svg>
