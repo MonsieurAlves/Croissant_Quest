@@ -4,28 +4,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="theme-color" content="#172b4d">
-  <title>Croissant Quest | Pac-Alves</title>
+  <title>Macaron Quest | Pac-Alves</title>
   <link rel="stylesheet" href="style.css">
-  <script src="game.js?v=3" defer></script>
+  <script src="game.js?v=4" defer></script>
 </head>
 <body>
   <main>
     <header class="hero">
       <div class="eyebrow">A VERY FRENCH ARCADE ADVENTURE</div>
-      <h1>Croissant <em>Quest</em></h1>
-      <p>Guide Monsieur Alves through the maze and collect every croissant!</p>
+      <h1>Macaron <em>Quest</em></h1>
+      <p>Guide Monsieur Alves through the maze and collect every macaron!</p>
     </header>
-    <section class="game-shell" aria-label="Croissant Quest game">
+    <section class="game-shell" aria-label="Macaron Quest game">
       <div class="scoreboard">
         <div class="metric"><span>Score</span><strong id="score">0</strong></div>
-        <div class="metric"><span>Croissants left</span><strong id="remaining">0</strong></div>
+        <div class="metric"><span>Macarons left</span><strong id="remaining">0</strong></div>
         <div class="metric"><span>Status</span><strong id="status">Ready</strong></div>
       </div>
       <div class="board-wrap">
-        <canvas id="maze" width="612" height="612" role="img" aria-label="Arcade maze with Monsieur Alves collecting croissants"></canvas>
+        <canvas id="maze" width="612" height="612" role="img" aria-label="Arcade maze with Monsieur Alves collecting macarons"></canvas>
         <div id="overlay" class="overlay">
           <div class="overlay-card">
-            <div class="overlay-icon" aria-hidden="true">🥐</div>
+            <div class="overlay-icon" aria-hidden="true">🍬</div>
             <h2 id="overlayTitle">Ready, Monsieur Alves?</h2>
             <p id="overlayText">Use your arrow keys or WASD. On a phone, use the direction buttons below.</p>
             <button id="primary" type="button">Start Game</button>
@@ -44,7 +44,7 @@
       </div>
       <p class="instructions">Arrow keys / WASD to move · Press Space to pause · Collect every 🥐 to win</p>
     </section>
-    <footer>Version 0.3 · Built for fun and for learning how games work</footer>
+    <footer>Version 0.4 · Built for fun and for learning how games work</footer>
   </main>
 </body>
 </html>
