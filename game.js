@@ -13,7 +13,7 @@ const sprites = { closed: new Image(), open: new Image() };
 sprites.closed.src = "assets/player-closed.svg";
 sprites.open.src = "assets/player-open.svg";
 const croissantSprite = new Image();
-croissantSprite.src = "assets/croissant.svg";
+croissantSprite.src = "assets/croissant-arcade-v2.svg";
 let lastStepAt = 0;
 ctx.imageSmoothingEnabled = false;
 
@@ -163,7 +163,7 @@ function drawPlayer(time){
 }
 function drawCroissant(x,y){
   const cx=(x+.5)*CELL,cy=(y+.5)*CELL;
-  const size=CELL*.74;
+  const size=CELL*.90;
   if(croissantSprite.complete && croissantSprite.naturalWidth){
     ctx.save();
     ctx.imageSmoothingEnabled=false;
