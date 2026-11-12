@@ -12,6 +12,8 @@ let playing = false, finished = false, score = 0, animationHandle = 0, lastFrame
 const sprites = { closed: new Image(), open: new Image() };
 sprites.closed.src = "assets/player-closed.svg";
 sprites.open.src = "assets/player-open.svg";
+const croissantSprite = new Image();
+croissantSprite.src = "assets/croissant.svg";
 let lastStepAt = 0;
 ctx.imageSmoothingEnabled = false;
 
@@ -161,14 +163,16 @@ function drawPlayer(time){
 }
 function drawCroissant(x,y){
   const cx=(x+.5)*CELL,cy=(y+.5)*CELL;
-  // Small pastry-shaped canvas glyph, avoiding browser emoji differences.
-  ctx.save();ctx.translate(cx,cy);ctx.rotate(-.25);
-  ctx.fillStyle="#f3b45e";ctx.strokeStyle="#b76b30";ctx.lineWidth=1.7;
-  ctx.beginPath();ctx.moveTo(-11,-5);ctx.quadraticCurveTo(0,7,11,-5);ctx.lineTo(13,6);
-  ctx.quadraticCurveTo(0,17,-13,6);ctx.closePath();ctx.fill();ctx.stroke();
-  ctx.strokeStyle="#ffe1a1";ctx.lineWidth=2;
-  ctx.beginPath();ctx.moveTo(-5,3);ctx.lineTo(-3,10);ctx.moveTo(3,3);ctx.lineTo(5,10);ctx.stroke();
-  ctx.restore();
+  const size=CELL*.74;
+  if(croissantSprite.complete && croissantSprite.naturalWidth){
+    ctx.save();
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(croissantSprite,cx-size/2,cy-size/2,size,size);
+    ctx.restore();
+    return;
+  }
+  ctx.fillStyle="#FFD17A";
+  ctx.fillRect(cx-6,cy-5,12,10);
 }
 function render(time){
   ctx.clearRect(0,0,canvas.width,canvas.height);
