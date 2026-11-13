@@ -1,5 +1,5 @@
 "use strict";
-// Macaron Quest v0.4 — movement, maze generation and collection.
+// Macaron Quest v0.7 — every reachable corridor contains a macaron except the starting tile.
 const canvas = document.getElementById("maze");
 const ctx = canvas.getContext("2d");
 const $ = id => document.getElementById(id);
@@ -60,8 +60,13 @@ function buildMaze(){
       if(!walls[y][x]&&(x!==1||y!==1)) openSpaces.push(key(x,y));
     }
   }
-  // Every walkable corridor tile gets a macaron, except the starting tile.
-  macarons=new Set(openSpaces);
+  // Every reachable walkable tile gets exactly one macaron, except the spawn tile.
+  macarons = new Set(openSpaces);
+  // Defensive check: catch accidental gaps if maze generation is changed later.
+  const expectedMacarons = walls.flat().filter(isWall => !isWall).length - 1;
+  if (macarons.size !== expectedMacarons) {
+    throw new Error("Macaron coverage mismatch: " + macarons.size + "/" + expectedMacarons);
+  }
   player={x:1,y:1};
   direction=null;
   desiredDirection=null;
